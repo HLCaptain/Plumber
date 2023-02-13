@@ -10,7 +10,6 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven { url "https://repo.kotlin.link" }
     }
 }
 rootProject.name = "Plumber"

@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id 'org.jetbrains.kotlin.jvm'
+    id 'maven-publish'
 }
 
 java {
@@ -18,5 +19,19 @@ compileKotlin {
 compileTestKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'com.github.HLCaptain'
+            artifactId = 'plumber'
+            version = '0.0.1-alpha'
+
+            afterEvaluate {
+                from components.java
+            }
+        }
     }
 }
