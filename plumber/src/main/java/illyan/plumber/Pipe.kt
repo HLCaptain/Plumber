@@ -1,6 +1,7 @@
 package illyan.plumber
 
 import illyan.plumber.filter.Filter
+import illyan.plumber.sensor.Sensor
 
 class Pipe<InputDataType, OutputDataType> {
     private val filters = mutableListOf<(InputDataType) -> InputDataType>()
@@ -33,6 +34,20 @@ class Pipe<InputDataType, OutputDataType> {
             filter: Filter<InputDataType>
         ): Builder<InputDataType, OutputDataType> {
             pipe.filters.add(filter::filterData)
+            return this
+        }
+
+        fun addSensor(
+            sensor: (InputDataType) -> Unit
+        ): Builder<InputDataType, OutputDataType> {
+            pipe.filters.add { sensor(it); it }
+            return this
+        }
+
+        fun addSensor(
+            sensor: Sensor<InputDataType>
+        ): Builder<InputDataType, OutputDataType> {
+            pipe.filters.add { sensor.monitorData(it); it }
             return this
         }
 

@@ -68,23 +68,17 @@ fun CalculatorScreen(
         val pipe = remember {
             Pipe.Builder<List<Float>, List<Float>>()
                 .setFitting { it }
-                .addFilter {
-                    average = it.average().toFloat()
-                    it
-                }
-                .addFilter {
-                    if (it.isEmpty()) return@addFilter it
+                .addSensor { average = it.average().toFloat() }
+                .addSensor {
+                    if (it.isEmpty()) return@addSensor
                     val sorted = it.sorted()
                     mean = if (sorted.size.mod(2) == 1) {
                         sorted[sorted.size / 2]
                     } else {
                         (sorted[sorted.size / 2] + sorted[(sorted.size / 2 - 1).coerceIn(0, sorted.size)]) / 2
                     }
-                    it
                 }
-                .addOutputPipe {
-                    Log.d("Calculator", "Average = $average, Mean = $mean")
-                }
+                .addSensor { Log.d("Calculator", "Average = $average, Mean = $mean") }
                 .build()
         }
         LaunchedEffect(floats.size) {
@@ -96,7 +90,7 @@ fun CalculatorScreen(
         Text(text = "Mean = $mean")
         Text(text = "Add this float to the others")
         var numberAsString by remember { mutableStateOf("") }
-        val addNumber = {
+        val addNumberToFloats = {
             numberAsString.toFloatOrNull()?.let { floats.add(it) }
             numberAsString = ""
         }
@@ -114,11 +108,11 @@ fun CalculatorScreen(
                 maxLines = 1,
                 singleLine = true,
                 keyboardActions = KeyboardActions(
-                    onDone = { addNumber() }
+                    onDone = { addNumberToFloats() }
                 )
             )
             Button(
-                onClick = addNumber
+                onClick = addNumberToFloats
             ) {
                 Text(text = "Add")
             }
